@@ -33,7 +33,7 @@ class CustomerForm extends React.Component {
 
     render() {
         return (
-            <div>
+            <div class='col-md-12 text-center'>
                 <form>
                     <div>
                     <label for='name'>Name:</label>

@@ -9,7 +9,9 @@ class ItemList extends React.Component{
     render(){
         
         return(
-            <JsonToTable json={this.props.itemList} />
+            <div class = "col-md-12 text-center table">
+                <JsonToTable json={this.props.itemList} />
+            </div>
         )
         
     }

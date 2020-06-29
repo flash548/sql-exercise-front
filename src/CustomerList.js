@@ -8,7 +8,9 @@ class CustomerList extends React.Component{
 
     render(){
         return(
-            <JsonToTable json={this.props.customerList} />
+            <div class = "col-md-12 text-center table">
+                <JsonToTable json={this.props.customerList} />
+            </div>
         )   
     }
 }
