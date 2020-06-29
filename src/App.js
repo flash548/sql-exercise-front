@@ -14,18 +14,18 @@ class App extends React.Component {
   }
 
   async componentDidMount() {
+
+    // download all users and cache
     let response = await fetch('http://localhost:3000/users');
-    let data = await response.json()
+    let users = await response.json()
 
-    let users = data.map(user => { return user.fname});
-
+    // download all makers and cache
     response = await fetch('http://localhost:3000/manufacturers');
-    data = await response.json()
+    let makers = await response.json()
 
-    let makers = data.map(maker => { return maker.company_name});
-
+    // download all items and cache
     response = await fetch('http://localhost:3000/items');
-    data = await response.json()
+    let data = await response.json()
 
     let items = data.map(item => { return item.name});
 
@@ -33,33 +33,34 @@ class App extends React.Component {
         users: users, 
         manufacturers: makers, 
         items: items,
-      
-        orderUser: '',
-        orderQty: '',
-        orderMaker: '',
-        orderItem: ''
       });
   }
 
-  updateOrderUser = (event) => {
-    this.setState({orderUser: event.target.value})
+  getUserId = (user) => {
+    for (var i = 0; i < this.state.users.length; i++) {
+      if (this.state.users[i].fname == user) {
+        return this.state.users[i].user_id;
+      }
+    }
+
+    return null;
   }
 
-  updateOrderQty = (event) => {
-    this.setState({orderQty: event.target.value})
+  getManuId = (name) => {
+    var ids = []
+    for (var j=0; j< name.length; j++ ) {
+      for (var i = 0; i < this.state.manufacturers.length; i++) {
+        if (this.state.manufacturers[i].company_name == name) {
+          ids.push(this.state.manufacturers[i].manufacturer_id);
+          break;
+        }
+      } 
+    }
+
+    return ids;
   }
 
-  updateMaker = (event) => {
-    this.setState({orderMaker: event.target.value})
-  }
-
-  updateItem = (event) => {
-    this.setState({orderItem: event.target.value})
-  }
-
-  submitOrder = async (event) => {
-    event.preventDefault();
-    console.log(this.state.orderQty, this.state.orderItem)
+  submitOrder = async (user, quantity, manu, item) => {
     let response = await fetch('http://localhost:3000/purchaseOrders',
       {
         method: 'POST',
@@ -67,10 +68,10 @@ class App extends React.Component {
           'Content-Type': 'application/json'
           // 'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: JSON.stringify({ user: '1', 
-              quantity: [ '10' ],
-              manufacturer : [ '1' ],
-              item : [ 'Towel' ] })
+        body: JSON.stringify({ user: this.getUserId(user), 
+              quantity: quantity,
+              manufacturer : this.getManuId(manu),
+              item : item })
       });
     let data = await response.json()
     alert (data)    
@@ -84,14 +85,10 @@ class App extends React.Component {
         </header>
         <div>
           <OrderForm 
-            users={this.state.users} 
-            makers={this.state.manufacturers} 
+            users={this.state.users.map(user=>user.fname)} 
+            makers={this.state.manufacturers.map(maker=>maker.company_name)} 
             items={this.state.items} 
-            submit={this.submitOrder}
-            userChanged={this.updateOrderUser} 
-            qtyChanged={this.updateOrderQty}
-            makerChanged={this.updateMaker}
-            updateItem={this.updateItem}  
+            submit={this.submitOrder}            
             />
         </div>
       </div>
