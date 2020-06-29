@@ -28,6 +28,7 @@ class OrderForm extends React.Component {
         if (this.state.user == '') { alert("Please pick a user"); return; }
         if (this.state.manu == '') { alert("Please pick a manufacturer"); return; }
         this.props.submit(this.state.user, this.state.quantity, this.state.manu, this.state.item)
+        alert("Order Sent!")
     }
     
 
